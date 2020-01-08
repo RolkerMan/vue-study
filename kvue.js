@@ -60,12 +60,14 @@ class KVue {
     // 保存选项
     this.$options = options;
     this.$data = options.data;
+    this.$methods = options.methods;
 
     // 响应化处理
     observe(this.$data)
 
     // 代理
     proxy(this, '$data')
+    proxy(this, '$methods')
 
     // 创建编译器
     new Compiler(options.el, this)
@@ -81,6 +83,10 @@ class Observer {
     if (typeof value === 'object') {
       this.walk(value)
     }
+    
+    if(Array.isArray(value)){
+      this.arrWalk(value)
+    }
   }
 
   // 对象数据响应化
@@ -91,6 +97,37 @@ class Observer {
   }
 
   // 数组数据响应化，待补充
+  arrWalk(arr){
+    return 
+    const methods = ['push', 'pop', 'shift', 'unshift', 'reverse', 'slice', 'map']
+
+    const method = methods[0]
+
+    const arrProto = Array.prototype
+    const protoObj = Object.create(arrProto)
+
+    arr.construtor.prototype[method] = (function(){
+      const self = this
+        var old = protoObj[method]
+
+      return function(){
+        // 1、进行原始操作
+        const result = old.apply(arr, arguments)
+        
+        // 2、进行响应式操作
+        console.log("result ", result);
+        console.log("进行响应式操作 ");
+        
+        // 递归
+        observe(val)
+
+        // 创建一个Dep和当前key一一对应
+        const dep = new Dep()
+        // 通知更新
+        dep.notify()
+      }
+    })()
+  }
 }
 
 // 观察者:保存更新函数，值发生变化调用更新函数

@@ -12,9 +12,14 @@
     <p>{{counter}}</p>
     <p>{{counter}}</p>
     <p>{{counter}}</p>
+    <p>{{array}}</p>
     <!-- 指令 -->
     <p k-text="counter"></p>
     <p k-html="desc"></p>
+    <!-- model -->
+    <input k-model="message" placeholder="edit me" @focus="focusMessage">
+    <p>Message is: {{message}}</p>
+    <span>客官来了</span>{{focusCount}}<span>次</span>
   </div>
 
   <script src="compile.js"></script>
@@ -25,13 +30,25 @@
       el:'#app',
       data: {
         counter: 1,
+        array: [1,2,3],
+        message: '',
+        focusCount: 0,
+        focusTxt: '不在',
         desc:'<span style="color:red">kvue可还行？</span>'
       },
+      methods: {
+        focusMessage: function () {
+          this.focusCount++
+        }
+      }
     })
     setInterval(() => {
       app.counter++
       // app.$data.counter++
-    }, 1000);
+
+      // app.array.push(app.counter)
+      // console.log("app.array ", app.array);
+    }, 5000);
     
   </script>
 </body>
